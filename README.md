@@ -41,12 +41,14 @@ etapas añadirán segmentación por instancia, conteo por imagen e interfaz en G
   a partir del original. Se conservaron solo las clases de manzana (`freshapples`,
   `rottenapples`) y se descartaron las demás frutas. 
 - **Número de imágenes:**
-    freshapples: 2,088 imágenes en total
-        Train (entrenamiento): 1,693 imágenes
-        Test (prueba): 395 imágenes
-    rottenapples: 2,943 imágenes en total
-        Train (entrenamiento): 2,342 imágenes
-        Test (prueba): 601 imágenes
+  freshapples: 2,088 imágenes en total
+  
+        |Train (entrenamiento): 1,693 imágenes
+        |Test (prueba): 395 imágenes
+    -rottenapples: 2,943 imágenes en total
+  
+        |Train (entrenamiento): 2,342 imágenes
+        |Test (prueba): 601 imágenes
   
 - **Tipo de anotación:** etiqueta por imagen (freshapples / rottenapples), heredada del original.
   No incluye máscaras de instancia; las máscaras para la segmentación se obtendrán
@@ -58,6 +60,8 @@ etapas añadirán segmentación por instancia, conteo por imagen e interfaz en G
 
 ## Estructura del repositorio
 
+```
+.
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
@@ -67,20 +71,23 @@ etapas añadirán segmentación por instancia, conteo por imagen e interfaz en G
 │   └── baseline_test.json      # métricas sobre test
 ├── notebooks/                  # notebook de entrenamiento y evaluación
 └── docs/                       # ficha de datos y bitácora
+```
+
 
 ## Instalación y uso
 
-bash
+```bash
 pip install -r requirements.txt
-
+```
 
 Organiza los datos así (los nombres de carpeta definen las clases):
 
+```
 apples_dataset/
 ├── train/  freshapples/  rottenapples/
 ├── val/    freshapples/  rottenapples/
 └── test/   freshapples/  rottenapples/
-
+```
 
 Entrenamiento y evaluación: ejecuta el notebook en `notebooks/`. Para clasificar una
 imagen con el modelo guardado, carga `modelos/baseline_v1.pt`  y aplica las mismas transformaciones de evaluación.
