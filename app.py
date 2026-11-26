@@ -6,6 +6,7 @@ con el modelo final y cuenta el total, las sanas y las deterioradas.
 Uso local o en Colab:   python app.py          (GRADIO_SHARE=1 para un enlace público temporal)
 Uso en Hugging Face Spaces: sube este archivo, requirements.txt y modelos/finalbaseline.pt
 """
+import gc
 import os, random, time
 from pathlib import Path
 
@@ -75,7 +76,15 @@ clasificador = clasificador.to(dev).eval()
 
 # ---- Detector / segmentador (Mask R-CNN preentrenado en COCO, no se entrena) ----
 pesos_det = MaskRCNN_ResNet50_FPN_V2_Weights.DEFAULT
-detector = maskrcnn_resnet50_fpn_v2(weights=pesos_det).to(dev).eval()
+# Ajustes para gastar menos memoria en un servidor pequeño: menos detecciones (cada una trae una máscara completa)
+# y un tamaño interno algo menor. Se pueden cambiar con variables de entorno.
+detector = maskrcnn_resnet50_fpn_v2(
+    weights=pesos_det,
+    box_score_thresh=0.1,
+    box_detections_per_img=int(os.environ.get("MAX_DET", 30)),
+    min_size=int(os.environ.get("DET_MIN_SIZE", 640)),
+    max_size=1024,
+).to(dev).eval()
 ID_MANZANA = pesos_det.meta["categories"].index("apple")
 # El detector llama 'donut', 'orange' o 'cake' a muchas manzanas muy podridas; se aceptan como posible manzana.
 CLASES_FRUTA = ["apple", "orange", "donut", "cake"]
@@ -257,6 +266,7 @@ def interfaz(img, umbral_mala, umbral_det):
     if img is None:
         return None, "Sube una foto."
     res = analizar(img, umbral_mala, umbral_det)
+    gc.collect()
     return dibujar(res), resumen_texto(res)
 
 
