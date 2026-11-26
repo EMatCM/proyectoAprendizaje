@@ -258,10 +258,9 @@ def dibujar(res, alpha=0.40):
         dr.text((px + 5, py + 3), texto, fill="white", font=fuente)
     return out
 
-# ---- Interfaz web ----
-import gradio as gr
-
-
+# ---- Interfaz web (Gradio) ----
+# Gradio solo se importa al ejecutar este archivo directamente (python app.py). Así otras interfaces,
+# como streamlit_app.py, pueden importar este módulo sin necesitar Gradio.
 def interfaz(img, umbral_mala, umbral_det):
     if img is None:
         return None, "Sube una foto."
@@ -270,16 +269,17 @@ def interfaz(img, umbral_mala, umbral_det):
     return dibujar(res), resumen_texto(res)
 
 
-demo = gr.Interface(
-    fn=interfaz,
-    inputs=[gr.Image(type="pil", label="Foto con varias manzanas"),
-            gr.Slider(0.1, 0.9, value=0.5, step=0.05, label="Umbral para 'deteriorada'"),
-            gr.Slider(0.1, 0.9, value=0.5, step=0.05, label="Umbral de detección")],
-    outputs=[gr.Image(label="Resultado"), gr.Textbox(label="Resumen", lines=8)],
-    title="Control de calidad de manzanas",
-    description="Segmenta cada manzana y la clasifica como sana o deteriorada. Inspección solo visual: "
-                "revisa a mano los resultados con confianza baja.",
-)
-
 if __name__ == "__main__":
+    import gradio as gr
+
+    demo = gr.Interface(
+        fn=interfaz,
+        inputs=[gr.Image(type="pil", label="Foto con varias manzanas"),
+                gr.Slider(0.1, 0.9, value=0.5, step=0.05, label="Umbral para 'deteriorada'"),
+                gr.Slider(0.1, 0.9, value=0.5, step=0.05, label="Umbral de detección")],
+        outputs=[gr.Image(label="Resultado"), gr.Textbox(label="Resumen", lines=8)],
+        title="Control de calidad de manzanas",
+        description="Segmenta cada manzana y la clasifica como sana o deteriorada. Inspección solo visual: "
+                    "revisa a mano los resultados con confianza baja.",
+    )
     demo.launch(server_name="0.0.0.0", server_port=int(os.environ.get("PORT", 7860)))
