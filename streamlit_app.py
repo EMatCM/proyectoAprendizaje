@@ -16,6 +16,8 @@ st.set_page_config(page_title="Control de calidad de manzanas", page_icon="🍎"
 st.title("Control de calidad de manzanas")
 st.caption("Segmenta cada manzana y la clasifica como sana o deteriorada. "
            "Inspección solo visual: revisa a mano los resultados con confianza baja.")
+st.warning("Además, evalúa manualmente la imagen: el modelo tiende a dar problemas con las manzanas "
+           "veteadas y amarillas, por lo que su resultado en esos casos debe confirmarse a ojo.")
 
 
 @st.cache_resource(show_spinner="Cargando los modelos (la primera vez tarda un par de minutos)...")
